@@ -76,3 +76,46 @@ test('after logging out the login page is shown again', function () {
 
     $this->get('/login')->assertStatus(200);
 });
+
+test('ticking remember me sets a long-lived login cookie', function () {
+    User::factory()->create([
+        'email' => 'remember@example.com',
+        'password' => 'password',
+        'role' => 'student',
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => 'remember@example.com',
+        'password' => 'password',
+        'remember' => '1',
+    ]);
+
+    $response->assertRedirect(route('student.home'));
+    expect(rememberCookieCount($response))->toBe(1);
+});
+
+test('login without remember me does not set the long-lived cookie', function () {
+    User::factory()->create([
+        'email' => 'noremember@example.com',
+        'password' => 'password',
+        'role' => 'student',
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => 'noremember@example.com',
+        'password' => 'password',
+    ]);
+
+    $response->assertRedirect(route('student.home'));
+    expect(rememberCookieCount($response))->toBe(0);
+});
+
+/**
+ * How many "remember me" cookies the response sends back.
+ */
+function rememberCookieCount($response): int
+{
+    return collect($response->headers->getCookies())
+        ->filter(fn ($cookie) => str_starts_with($cookie->getName(), 'remember_web_'))
+        ->count();
+}

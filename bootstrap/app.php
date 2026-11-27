@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureRole;
+use App\Http\Middleware\PreventBackCache;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Short name used in routes: ->middleware('role:student')
         $middleware->alias([
             'role' => EnsureRole::class,
+        ]);
+
+        // Every web page is marked "do not cache", so Back always asks the server.
+        $middleware->web(append: [
+            PreventBackCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

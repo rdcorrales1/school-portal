@@ -49,7 +49,10 @@ class User extends Authenticatable
             default => '/',
         };
     }
-     /** Public URL of the profile picture, or null when none was uploaded.*/
+
+    /**
+     * Public URL of the profile picture, or null when none was uploaded.
+     */
     public function profilePhotoUrl(): ?string
     {
         return $this->profile_photo_path

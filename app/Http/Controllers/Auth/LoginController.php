@@ -24,7 +24,12 @@ class LoginController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        if (! Auth::attempt($request->validated())) {
+        // Only email and password are checked. "remember" is a checkbox, not a login field.
+        $credentials = $request->safe()->only(['email', 'password']);
+
+        // With remember on, Laravel keeps the login in a long-lived cookie,
+        // so the user stays logged in after the browser is closed.
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
                 ->withErrors(['email' => 'These credentials do not match our records.'])
                 ->onlyInput('email');
