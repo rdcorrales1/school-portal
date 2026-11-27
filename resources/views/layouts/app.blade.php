@@ -259,6 +259,23 @@
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                            href="{{ route('admin.users.index') }}">Users</a>
                     </li>
+                @elseif (auth()->user()->role === 'principal')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('principal.home') ? 'active' : '' }}"
+                           href="{{ route('principal.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('principal.students.*') ? 'active' : '' }}"
+                           href="{{ route('principal.students.index') }}">Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('principal.teachers.*') ? 'active' : '' }}"
+                           href="{{ route('principal.teachers.index') }}">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('principal.subjects.*') ? 'active' : '' }}"
+                           href="{{ route('principal.subjects.index') }}">Subjects</a>
+                    </li>
                 @endif
             </ul>
 
