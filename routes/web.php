@@ -3,6 +3,10 @@
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Principal\HomeController as PrincipalHomeController;
+use App\Http\Controllers\Principal\StudentController as PrincipalStudentController;
+use App\Http\Controllers\Principal\SubjectController as PrincipalSubjectController;
+use App\Http\Controllers\Principal\TeacherController as PrincipalTeacherController;
 use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
 use App\Http\Controllers\Teacher\MarkController;
 use App\Http\Controllers\Teacher\StudentController;
@@ -25,6 +29,19 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
+    });
+
+// Principal pages are read-only in the Must tier.
+Route::middleware(['auth', 'role:principal'])
+    ->prefix('principal')->name('principal.')
+    ->group(function () {
+        Route::get('/', [PrincipalHomeController::class, 'index'])->name('home');
+
+        Route::get('students', [PrincipalStudentController::class, 'index'])->name('students.index');
+        Route::get('teachers', [PrincipalTeacherController::class, 'index'])->name('teachers.index');
+
+        Route::get('subjects', [PrincipalSubjectController::class, 'index'])->name('subjects.index');
+        Route::get('subjects/{subject}', [PrincipalSubjectController::class, 'show'])->name('subjects.show');
     });
 
 Route::middleware(['auth', 'role:teacher'])
