@@ -54,17 +54,21 @@
 
                 <div class="mb-4">
                     <label for="password" class="form-label fw-semibold">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="form-control @error('password') is-invalid @enderror"
-                        autocomplete="current-password"
-                        required
-                    >
-                    @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div class="input-group has-validation">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword"
+                                aria-controls="password" aria-pressed="false">Show</button>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-cyan w-100">Sign In</button>
@@ -73,4 +77,19 @@
     </div>
 
 </div>
+
+<script>
+    // Show or hide the password text when the Show/Hide button is clicked.
+    (function () {
+        var passwordInput = document.getElementById('password');
+        var toggleButton = document.getElementById('togglePassword');
+
+        toggleButton.addEventListener('click', function () {
+            var isHidden = passwordInput.type === 'password';
+            passwordInput.type = isHidden ? 'text' : 'password';
+            toggleButton.textContent = isHidden ? 'Hide' : 'Show';
+            toggleButton.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        });
+    })();
+</script>
 @endsection
