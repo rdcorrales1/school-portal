@@ -174,6 +174,24 @@
             padding: var(--space-6);
         }
 
+        /* Round profile picture (falls back to the first letter of the name) */
+        .avatar {
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid var(--accent-cyan);
+        }
+        .avatar-initial {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-cyan);
+            color: var(--text-on-blue);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
         .school-year-badge {
             display: inline-block;
             background: var(--accent-cyan);
@@ -228,6 +246,10 @@
                         <a class="nav-link {{ request()->routeIs('student.marks') ? 'active' : '' }}"
                            href="{{ route('student.marks') }}">My Marks</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('student.account*') ? 'active' : '' }}"
+                           href="{{ route('student.account') }}">My Account</a>
+                    </li>
                 @elseif (auth()->user()->role === 'admin')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}"
@@ -241,7 +263,12 @@
             </ul>
 
             <div class="mt-auto p-4 small" style="color: var(--text-muted-on-blue);">
-                <div class="fw-semibold" style="color: var(--text-on-blue);">{{ auth()->user()->name }}</div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    @if (auth()->user()->role === 'student')
+                        @include('partials.avatar', ['user' => auth()->user(), 'size' => 40])
+                    @endif
+                    <div class="fw-semibold" style="color: var(--text-on-blue);">{{ auth()->user()->name }}</div>
+                </div>
                 <div class="text-capitalize mb-3">{{ auth()->user()->role }}</div>
 
                 <form method="POST" action="{{ route('logout') }}">
