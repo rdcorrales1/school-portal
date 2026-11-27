@@ -15,6 +15,7 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')->name('admin.')
