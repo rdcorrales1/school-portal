@@ -260,6 +260,11 @@
                     Menu
                 </button>
             </div>
+
+            <img src="{{ asset('images/school-banner.jpg') }}"
+                 alt="Republic of the Philippines, Department of Science and Technology, Philippine Science High School System"
+                 class="img-fluid w-100 mb-4"
+                 style="border-radius: var(--radius-lg);">
         @endauth
 
         @if (session('status'))
