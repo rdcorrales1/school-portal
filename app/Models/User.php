@@ -46,6 +46,7 @@ class User extends Authenticatable
             'teacher' => route('teacher.home'),
             'admin' => route('admin.home'),
             'student' => route('student.home'),
+            'principal' => route('principal.home'),
             default => '/',
         };
     }
