@@ -1,4 +1,6 @@
-@extends('layouts.app', ['title' => 'Teacher Home'])
+@extends('layouts.app')
+
+@section('title', 'Teacher Home')
 
 @section('content')
     <h1 class="mb-2">Teacher Home</h1>
