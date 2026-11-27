@@ -17,11 +17,13 @@ class Student extends Model
     /** @use HasFactory<StudentFactory> */
     use HasFactory;
 
+    // The login account of this student.
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    // Subjects the student is enrolled in (through the enrollments table).
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class, 'enrollments')->withTimestamps();

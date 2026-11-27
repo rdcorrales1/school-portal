@@ -23,7 +23,7 @@ test('a user can log in with the correct email and password', function () {
         'password' => 'password',
     ]);
 
-    $response->assertRedirect('/');
+    $response->assertRedirect('/student');
     $this->assertAuthenticatedAs($user);
 });
 

@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Student\HomeController as StudentHomeController;
+use App\Http\Controllers\Student\MarkController as StudentMarkController;
 use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
-use App\Http\Controllers\Teacher\MarkController;
-use App\Http\Controllers\Teacher\StudentController;
-use App\Http\Controllers\Teacher\SubjectController;
+use App\Http\Controllers\Teacher\MarkController as TeacherMarkController;
+use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
+use App\Http\Controllers\Teacher\SubjectController as TeacherSubjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,19 +29,29 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
     });
 
+// Student pages. Only logged-in users with the "student" role can open these.
+// No student ID is in the URL: the controller uses the logged-in user instead.
+Route::middleware(['auth', 'role:student'])
+    ->prefix('student')->name('student.')
+    ->group(function () {
+        Route::get('/', [StudentHomeController::class, 'index'])->name('home');
+        Route::get('/my/marks', [StudentMarkController::class, 'index'])->name('marks');
+    });
+
+// Teacher pages. Only logged-in users with the "teacher" role can open these.
 Route::middleware(['auth', 'role:teacher'])
     ->prefix('teacher')->name('teacher.')
     ->group(function () {
         Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
 
-        Route::get('students', [StudentController::class, 'index'])->name('students.index');
-        Route::get('students/create', [StudentController::class, 'create'])->name('students.create');
-        Route::post('students', [StudentController::class, 'store'])->name('students.store');
+        Route::get('students', [TeacherStudentController::class, 'index'])->name('students.index');
+        Route::get('students/create', [TeacherStudentController::class, 'create'])->name('students.create');
+        Route::post('students', [TeacherStudentController::class, 'store'])->name('students.store');
 
-        Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index');
-        Route::get('subjects/create', [SubjectController::class, 'create'])->name('subjects.create');
-        Route::post('subjects', [SubjectController::class, 'store'])->name('subjects.store');
+        Route::get('subjects', [TeacherSubjectController::class, 'index'])->name('subjects.index');
+        Route::get('subjects/create', [TeacherSubjectController::class, 'create'])->name('subjects.create');
+        Route::post('subjects', [TeacherSubjectController::class, 'store'])->name('subjects.store');
 
-        Route::get('marks', [MarkController::class, 'index'])->name('marks.index');
-        Route::post('marks', [MarkController::class, 'store'])->name('marks.store');
+        Route::get('marks', [TeacherMarkController::class, 'index'])->name('marks.index');
+        Route::post('marks', [TeacherMarkController::class, 'store'])->name('marks.store');
     });
