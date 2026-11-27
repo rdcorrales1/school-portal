@@ -3,6 +3,10 @@
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Principal\HomeController as PrincipalHomeController;
+use App\Http\Controllers\Principal\StudentController as PrincipalStudentController;
+use App\Http\Controllers\Principal\SubjectController as PrincipalSubjectController;
+use App\Http\Controllers\Principal\TeacherController as PrincipalTeacherController;
 use App\Http\Controllers\Student\AccountController as StudentAccountController;
 use App\Http\Controllers\Student\HomeController as StudentHomeController;
 use App\Http\Controllers\Student\MarkController as StudentMarkController;
@@ -61,4 +65,20 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::get('marks', [TeacherMarkController::class, 'index'])->name('marks.index');
         Route::post('marks', [TeacherMarkController::class, 'store'])->name('marks.store');
+    });
+
+// Principal pages. Read only: the principal can view students, teachers and subjects.
+Route::middleware(['auth', 'role:principal'])
+    ->prefix('principal')->name('principal.')
+    ->group(function () {
+        Route::get('/', [PrincipalHomeController::class, 'index'])->name('home');
+
+        Route::get('students', [PrincipalStudentController::class, 'index'])->name('students.index');
+        Route::get('students/{student}', [PrincipalStudentController::class, 'show'])->name('students.show');
+
+        Route::get('teachers', [PrincipalTeacherController::class, 'index'])->name('teachers.index');
+        Route::get('teachers/{teacher}', [PrincipalTeacherController::class, 'show'])->name('teachers.show');
+
+        Route::get('subjects', [PrincipalSubjectController::class, 'index'])->name('subjects.index');
+        Route::get('subjects/{subject}', [PrincipalSubjectController::class, 'show'])->name('subjects.show');
     });
