@@ -19,11 +19,12 @@ Build in this order. Do not start a Should or Stretch item until all Must items 
 
 ### Must
 - Login and logout.
-- Three roles: `teacher`, `student`, `principal`. Each role lands on its own home page.
+- Four roles: `admin`, `teacher`, `student`, `principal`. Each role lands on its own home page.
 - Role check on every protected route. A wrong-role URL returns **403**.
-- Teacher: add students (this also creates the student's login account), enter marks.
+- Admin: full access. Can add and edit users, their roles and data.
+- Teacher: see their own students (students enrolled in subjects they teach), add students (this also creates the student's login account), add subjects, enter marks for their students.
 - Student: "My marks", showing only their own marks.
-- Principal: read-only list of all students.
+- Principal: read-only list of all students and all teachers.
 - API: `POST /api/login` returns a token. `GET /api/students` returns JSON for teacher and principal, with a valid token.
 - At least 3 tests that pass with `php artisan test`.
 
@@ -39,9 +40,10 @@ Build in this order. Do not start a Should or Stretch item until all Must items 
 
 ## Roles and permissions
 
-- A role is a plain string column on `users`: `teacher`, `student`, or `principal`.
-- `role` must **never** be mass-assignable. Do not put it in `$fillable`. Set it explicitly (`$user->role = 'student';`).
-- A teacher can only manage students and enter marks for subjects they teach.
+- A role is a plain string column on `users`: `admin`, `teacher`, `student`, or `principal`.
+- `role` must **never** be mass-assignable. Do not put it in `$fillable`. Set it explicitly (`$user->role = 'student';`). Only an admin can change a user's role.
+- An admin has full access to all data, including changing roles and deactivating accounts (`is_active`).
+- A teacher can only see and manage students enrolled in subjects they teach. A teacher can only enter marks for those students. A teacher can create subjects; the subject's `teacher_id` is set to the teacher who created it.
 - A student can only see their own data. Student routes must **not** take a user or student ID from the URL. Use the logged-in user instead (for example `/my/marks`).
 - A principal can view all students and teachers. A principal cannot change data in the Must tier.
 - Use Policies or middleware for every access check. Never rely on hiding a button in the UI.
@@ -59,21 +61,23 @@ Route::middleware(['auth', 'role:teacher'])
 
 ## Database
 
-- Must-tier tables: `users`, `students`, `subjects`, `marks`.
-- Use string columns for `role` (not enums).
+- Must-tier tables: `users`, `students`, `subjects`, `enrollments`, `marks`.
+- Use string columns for `role` (not enums). Validate allowed role values in the Form Request.
 - Marks are whole numbers from 0 to 100. Only one mark per student, subject and quarter (unique index on `student_id, subject_id, quarter`).
+- A student is linked to a subject through `enrollments`. Each student can be enrolled in a subject only once (unique index on `student_id, subject_id`).
 - Never edit a migration that is already on `main`. Create a new migration instead.
 - Run migrations in order. After pulling changes that include new migrations, run `php artisan migrate:fresh --seed`.
 - When a teacher adds a student, create the `users` row and the `students` row together inside `DB::transaction`.
 
 | Table | Key columns |
 |---|---|
-| `users` | name, email, password, role |
+| `users` | name, email, password, role, is_active |
 | `students` | user_id, student_no (e.g. `2026-00142`) |
 | `subjects` | code (e.g. `CS-101`), name, teacher_id → users |
+| `enrollments` | student_id → students, subject_id → subjects |
 | `marks` | student_id, subject_id, quarter, mark (0–100) |
 
-Seeder logins (demo only): `principal`, `teacher` and `student` accounts, all with password `password`. Passwords in the seeder are for local demo use only.
+Seeder logins (demo only): `admin`, `principal`, `teacher` and `student` accounts, all with password `password`. Passwords in the seeder are for local demo use only.
 
 ### `.env` (values stay local)
 ```
@@ -189,9 +193,10 @@ Load the fonts from Google Fonts in the layout `<head>`, next to the Bootstrap C
 ### Role menus
 | Role | Links |
 |---|---|
-| Teacher | Home, Students, Marks |
+| Admin | Home, Users, Subjects, Students |
+| Teacher | Home, Students, Subjects, Marks |
 | Student | Home, My Marks |
-| Principal | Home, Students |
+| Principal | Home, Students, Teachers |
 
 ### Components
 - **Tables:** inside a white card, wrapped in `.table-responsive`. Header row cool gray, muted text, uppercase 12px weight 600. IDs, codes and marks in mono.
