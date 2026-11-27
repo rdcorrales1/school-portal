@@ -7,10 +7,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -33,6 +34,31 @@ class User extends Authenticatable
     public function subjects(): HasMany
     {
         return $this->hasMany(Subject::class, 'teacher_id');
+    }
+
+    /**
+     * The home page for this user's role. Used after login and when a
+     * logged-in user tries to open the login page again.
+     */
+    public function homeUrl(): string
+    {
+        return match ($this->role) {
+            'teacher' => route('teacher.home'),
+            'admin' => route('admin.home'),
+            'student' => route('student.home'),
+            'principal' => route('principal.home'),
+            default => '/',
+        };
+    }
+
+    /**
+     * Public URL of the profile picture, or null when none was uploaded.
+     */
+    public function profilePhotoUrl(): ?string
+    {
+        return $this->profile_photo_path
+            ? Storage::disk('public')->url($this->profile_photo_path)
+            : null;
     }
 
     /**

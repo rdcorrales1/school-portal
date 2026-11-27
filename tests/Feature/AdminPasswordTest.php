@@ -24,7 +24,7 @@ it('lets an admin reset a student\'s password and the student can sign in with i
     $this->post(route('login'), [
         'email' => 'reset-me@example.com',
         'password' => 'new-secret-123',
-    ])->assertRedirect('/');
+    ])->assertRedirect('/student');
 
     $this->assertAuthenticatedAs($student);
 });

@@ -33,15 +33,8 @@ class LoginController extends Controller
         // Create a fresh session ID after login to prevent session fixation.
         $request->session()->regenerate();
 
-        // Each role lands on its home page. The student home page is not built yet.
-        $home = match ($request->user()->role) {
-            'teacher' => route('teacher.home'),
-            'admin' => route('admin.home'),
-            'principal' => route('principal.home'),
-            default => '/',
-        };
-
-        return redirect()->intended($home);
+        // Each role lands on its home page (see User::homeUrl).
+        return redirect()->intended($request->user()->homeUrl());
     }
 
     /**

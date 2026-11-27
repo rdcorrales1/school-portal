@@ -23,7 +23,7 @@ test('a user can log in with the correct email and password', function () {
         'password' => 'password',
     ]);
 
-    $response->assertRedirect('/');
+    $response->assertRedirect('/student');
     $this->assertAuthenticatedAs($user);
 });
 
@@ -49,4 +49,30 @@ test('an empty form shows required errors and does not log in', function () {
     $response->assertRedirect('/login');
     $response->assertSessionHasErrors(['email', 'password']);
     $this->assertGuest();
+});
+
+test('a logged in student is sent to their home page instead of the login page', function () {
+    $student = User::factory()->create(['role' => 'student']);
+
+    $this->actingAs($student)
+        ->get('/login')
+        ->assertRedirect(route('student.home'));
+});
+
+test('a logged in teacher cannot post to the login page again', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+
+    $this->actingAs($teacher)
+        ->post('/login', ['email' => 'other@example.com', 'password' => 'password'])
+        ->assertRedirect(route('teacher.home'));
+
+    $this->assertAuthenticatedAs($teacher);
+});
+
+test('after logging out the login page is shown again', function () {
+    $student = User::factory()->create(['role' => 'student']);
+
+    $this->actingAs($student)->post('/logout');
+
+    $this->get('/login')->assertStatus(200);
 });
