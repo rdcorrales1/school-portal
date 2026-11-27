@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
 use App\Http\Controllers\Teacher\MarkController;
@@ -13,6 +15,16 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')->name('admin.')
+    ->group(function () {
+        Route::get('/', [AdminHomeController::class, 'index'])->name('home');
+
+        Route::get('users', [UserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
+    });
 
 Route::middleware(['auth', 'role:teacher'])
     ->prefix('teacher')->name('teacher.')
