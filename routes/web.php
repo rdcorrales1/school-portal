@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Student\AccountController as StudentAccountController;
 use App\Http\Controllers\Student\HomeController as StudentHomeController;
 use App\Http\Controllers\Student\MarkController as StudentMarkController;
 use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'role:student'])
     ->group(function () {
         Route::get('/', [StudentHomeController::class, 'index'])->name('home');
         Route::get('/my/marks', [StudentMarkController::class, 'index'])->name('marks');
+        Route::get('/my/account', [StudentAccountController::class, 'show'])->name('account');
+        Route::post('/my/account/photo', [StudentAccountController::class, 'updatePhoto'])->name('account.photo');
     });
 
 // Teacher pages. Only logged-in users with the "teacher" role can open these.
