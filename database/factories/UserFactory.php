@@ -34,6 +34,30 @@ class UserFactory extends Factory
     }
 
     /**
+     * Create a user with the teacher role.
+     */
+    public function teacher(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => 'teacher']);
+    }
+
+    /**
+     * Create a user with the student role.
+     */
+    public function student(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => 'student']);
+    }
+
+    /**
+     * Create a user with the principal role.
+     */
+    public function principal(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => 'principal']);
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static

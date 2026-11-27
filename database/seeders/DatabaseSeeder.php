@@ -15,11 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Demo accounts only. Password for all of them is "password".
+        User::factory()->principal()->create([
+            'name' => 'Demo Principal',
+            'email' => 'principal@example.com',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->teacher()->create([
+            'name' => 'Demo Teacher',
+            'email' => 'teacher@example.com',
+        ]);
+
+        User::factory()->student()->create([
+            'name' => 'Demo Student',
+            'email' => 'student@example.com',
         ]);
     }
 }
