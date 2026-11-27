@@ -71,6 +71,12 @@
                     </div>
                 </div>
 
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1"
+                           @checked(old('remember'))>
+                    <label class="form-check-label" for="remember">Remember me on this browser</label>
+                </div>
+
                 <button type="submit" class="btn btn-cyan w-100">Sign In</button>
             </form>
         </div>

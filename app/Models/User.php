@@ -48,6 +48,9 @@ class User extends Authenticatable
             'student' => route('student.home'),
             default => '/',
         };
+    }
+
+    /**
      * Public URL of the profile picture, or null when none was uploaded.
      */
     public function profilePhotoUrl(): ?string
