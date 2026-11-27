@@ -24,7 +24,7 @@
     </div>
 
     {{-- Right: sign-in form --}}
-    <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
+    <div class="col-lg-6 surface-white d-flex align-items-center justify-content-center p-4">
         <div class="w-100" style="max-width: 400px;">
             <h2 class="mb-1">Portal Sign In</h2>
             <p class="text-muted-token mb-4">Students, Teachers &amp; Principal</p>

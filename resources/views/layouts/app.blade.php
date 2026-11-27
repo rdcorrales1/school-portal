@@ -36,8 +36,8 @@
         }
 
         body {
-            background: var(--surface-white);
-            color: var(--text-dark);
+            background: var(--bg-royal-blue);
+            color: var(--text-on-blue);
             font-family: var(--font-body);
             font-size: 1rem;
             line-height: 1.6;
@@ -52,8 +52,19 @@
         .portal-sidebar {
             background: var(--bg-royal-blue);
             color: var(--text-on-blue);
+            border-right: 1px solid color-mix(in srgb, var(--text-on-blue) 15%, transparent);
             width: 240px;
             min-height: 100vh;
+        }
+        @media (min-width: 992px) {
+            /* On desktop the side nav stays in view while the page scrolls */
+            .portal-sidebar {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
+                flex-shrink: 0;
+            }
         }
         .portal-sidebar .nav-link {
             color: var(--text-muted-on-blue);
@@ -70,14 +81,52 @@
 
         .portal-card {
             background: var(--surface-white);
+            color: var(--text-dark);
             border-radius: var(--radius-lg);
             padding: var(--space-6);
+            border: 1px solid color-mix(in srgb, var(--border-cool-gray) 60%, transparent);
+            box-shadow: 0 1px 3px color-mix(in srgb, var(--text-dark) 6%, transparent);
+        }
+
+        /* Page sections (Login right panel) */
+        .surface-white { background: var(--surface-white); color: var(--text-dark); }
+
+        /* Table header row: cool gray, muted, small uppercase */
+        .portal-card thead th {
+            background: var(--surface-cool-gray);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-cool-gray);
+            white-space: nowrap;
+        }
+        .portal-card tbody td {
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+        .portal-card .table > :not(caption) > * > * {
+            padding: var(--space-3) var(--space-4);
+        }
+
+        /* Flash message uses the status colors */
+        .alert-success {
+            background: color-mix(in srgb, var(--status-success) 12%, transparent);
+            border: 1px solid color-mix(in srgb, var(--status-success) 35%, transparent);
+            color: var(--text-dark);
+            border-radius: var(--radius-md);
         }
 
         .text-on-blue { color: var(--text-on-blue); }
         .text-muted-on-blue { color: var(--text-muted-on-blue); }
         .bg-royal-blue { background: var(--bg-royal-blue); }
         .text-muted-token { color: var(--text-muted); }
+        /* Muted text is light on the blue page, and gray inside white cards/tables */
+        .text-muted { color: var(--text-muted-on-blue) !important; }
+        .portal-card .text-muted,
+        .feature-card .text-muted { color: var(--text-muted) !important; }
+        .portal-card .table { color: var(--text-dark); }
         .mono { font-family: var(--font-mono); }
 
         .btn-accent, .btn-cyan {
@@ -100,9 +149,21 @@
             border: 1px solid var(--border-cool-gray);
             border-radius: var(--radius-md);
         }
-        .form-control:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.25);
+            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-cyan) 25%, transparent);
+        }
+        .form-select {
+            min-height: 40px;
+            background-color: var(--surface-cool-gray);
+            border: 1px solid var(--border-cool-gray);
+            border-radius: var(--radius-md);
+        }
+        .form-label {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
         }
 
         .feature-card {
@@ -158,19 +219,33 @@
                         <a class="nav-link {{ request()->routeIs('teacher.marks.*') ? 'active' : '' }}"
                            href="{{ route('teacher.marks.index') }}">Marks</a>
                     </li>
+                @elseif (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}"
+                           href="{{ route('admin.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                           href="{{ route('admin.users.index') }}">Users</a>
+                    </li>
                 @endif
             </ul>
 
             <div class="mt-auto p-4 small" style="color: var(--text-muted-on-blue);">
                 <div class="fw-semibold" style="color: var(--text-on-blue);">{{ auth()->user()->name }}</div>
-                <div class="text-capitalize">{{ auth()->user()->role }}</div>
+                <div class="text-capitalize mb-3">{{ auth()->user()->role }}</div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-light w-100">Log out</button>
+                </form>
             </div>
         </nav>
     @endauth
 
     <div class="flex-grow-1 {{ auth()->check() ? 'p-3 p-md-4' : '' }}" style="min-width: 0;">
         @auth
-            <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4 d-lg-none">
                 <button class="btn btn-accent d-lg-none" type="button"
                         data-bs-toggle="offcanvas" data-bs-target="#portalNav" aria-controls="portalNav">
                     Menu

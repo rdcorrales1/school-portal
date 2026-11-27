@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->demoUser('admin@example.com', 'Demo Admin', 'admin');
         $this->demoUser('principal@example.com', 'Demo Principal', 'principal');
         $teacher = $this->demoUser('teacher@example.com', 'Demo Teacher', 'teacher');
         $demoStudentUser = $this->demoUser('student@example.com', 'Demo Student', 'student');
@@ -72,6 +73,7 @@ class DatabaseSeeder extends Seeder
         $factory = match ($role) {
             'teacher' => User::factory()->teacher(),
             'student' => User::factory()->student(),
+            'admin' => User::factory()->admin(),
             default => User::factory()->principal(),
         };
 
