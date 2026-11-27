@@ -146,6 +146,18 @@
                         <a class="nav-link {{ request()->routeIs('teacher.home') ? 'active' : '' }}"
                            href="{{ route('teacher.home') }}">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.students.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.students.index') }}">Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.subjects.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.subjects.index') }}">Subjects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.marks.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.marks.index') }}">Marks</a>
+                    </li>
                 @endif
             </ul>
 
@@ -165,6 +177,10 @@
                 </button>
             </div>
         @endauth
+
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">{{ session('status') }}</div>
+        @endif
 
         @yield('content')
     </div>
