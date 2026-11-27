@@ -34,7 +34,7 @@ Route::middleware(['auth', 'role:admin'])
 Route::middleware(['auth', 'role:student'])
     ->prefix('student')->name('student.')
     ->group(function () {
-        Route::get('/home', [StudentHomeController::class, 'index'])->name('home');
+        Route::get('/', [StudentHomeController::class, 'index'])->name('home');
         Route::get('/my/marks', [StudentMarkController::class, 'index'])->name('marks');
     });
 

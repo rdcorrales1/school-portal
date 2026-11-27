@@ -219,6 +219,15 @@
                         <a class="nav-link {{ request()->routeIs('teacher.marks.*') ? 'active' : '' }}"
                            href="{{ route('teacher.marks.index') }}">Marks</a>
                     </li>
+                @elseif (auth()->user()->role === 'student')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('student.home') ? 'active' : '' }}"
+                           href="{{ route('student.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('student.marks') ? 'active' : '' }}"
+                           href="{{ route('student.marks') }}">My Marks</a>
+                    </li>
                 @elseif (auth()->user()->role === 'admin')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}"
