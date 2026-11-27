@@ -37,6 +37,17 @@ class User extends Authenticatable
     }
 
     /**
+     * The home page for this user's role. Used after login and when a
+     * logged-in user tries to open the login page again.
+     */
+    public function homeUrl(): string
+    {
+        return match ($this->role) {
+            'teacher' => route('teacher.home'),
+            'admin' => route('admin.home'),
+            'student' => route('student.home'),
+            default => '/',
+        };
      * Public URL of the profile picture, or null when none was uploaded.
      */
     public function profilePhotoUrl(): ?string

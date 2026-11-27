@@ -10,14 +10,18 @@ use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
 use App\Http\Controllers\Teacher\MarkController as TeacherMarkController;
 use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
 use App\Http\Controllers\Teacher\SubjectController as TeacherSubjectController;
+use App\Http\Middleware\RedirectIfLoggedIn;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [LoginController::class, 'create'])->name('login');
-Route::post('/login', [LoginController::class, 'store']);
+// A logged-in user is sent to their home page. They must log out to see the login page.
+Route::middleware(RedirectIfLoggedIn::class)->group(function () {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store']);
+});
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware(['auth', 'role:admin'])

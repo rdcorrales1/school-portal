@@ -34,14 +34,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         // Each role lands on its home page. The principal home page is not built yet.
-        $home = match ($request->user()->role) {
-            'teacher' => route('teacher.home'),
-            'admin' => route('admin.home'),
-            'student' => route('student.home'),
-            default => '/',
-        };
-
-        return redirect()->intended($home);
+        return redirect()->intended($request->user()->homeUrl());
     }
 
     /**
