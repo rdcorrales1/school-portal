@@ -172,7 +172,12 @@
 
             <div class="mt-auto p-4 small" style="color: var(--text-muted-on-blue);">
                 <div class="fw-semibold" style="color: var(--text-on-blue);">{{ auth()->user()->name }}</div>
-                <div class="text-capitalize">{{ auth()->user()->role }}</div>
+                <div class="text-capitalize mb-3">{{ auth()->user()->role }}</div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-light w-100">Log out</button>
+                </form>
             </div>
         </nav>
     @endauth
