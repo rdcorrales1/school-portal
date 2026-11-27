@@ -10,6 +10,7 @@ class EnsureRole
 {
     /**
      * Allow the request only if the logged-in user has one of the given roles.
+     * Any other user gets a 403 Forbidden response.
      *
      * Use it on a route like this: ->middleware(['auth', 'role:teacher'])
      * Several roles are allowed too:  role:teacher,principal
@@ -19,7 +20,7 @@ class EnsureRole
         $user = $request->user();
 
         // Wrong role (or no user at all) gets 403 Forbidden.
-        if (! $user || ! in_array($user->role, $roles, true)) {
+        if ($user === null || ! in_array($user->role, $roles, true)) {
             abort(403);
         }
 

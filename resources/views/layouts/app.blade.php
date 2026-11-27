@@ -48,13 +48,39 @@
         h2 { font-size: 1.5rem; line-height: 1.3; font-weight: 600; }
         h3 { font-size: 1.125rem; line-height: 1.4; font-weight: 600; }
 
+        /* Side navigation (logged-in pages only) */
+        .portal-sidebar {
+            background: var(--bg-royal-blue);
+            color: var(--text-on-blue);
+            width: 240px;
+            min-height: 100vh;
+        }
+        .portal-sidebar .nav-link {
+            color: var(--text-muted-on-blue);
+            border-left: 3px solid transparent;
+            border-radius: 0;
+            padding: var(--space-3) var(--space-6);
+        }
+        .portal-sidebar .nav-link:hover { color: var(--text-on-blue); }
+        .portal-sidebar .nav-link.active {
+            background: color-mix(in srgb, var(--accent-cyan) 15%, transparent);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .portal-card {
+            background: var(--surface-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+        }
+
         .text-on-blue { color: var(--text-on-blue); }
         .text-muted-on-blue { color: var(--text-muted-on-blue); }
         .bg-royal-blue { background: var(--bg-royal-blue); }
         .text-muted-token { color: var(--text-muted); }
         .mono { font-family: var(--font-mono); }
 
-        .btn-cyan {
+        .btn-accent, .btn-cyan {
             background: var(--accent-cyan);
             color: var(--text-on-blue);
             border: none;
@@ -62,6 +88,7 @@
             min-height: 40px;
             font-weight: 600;
         }
+        .btn-accent:hover, .btn-accent:focus,
         .btn-cyan:hover, .btn-cyan:focus {
             background: var(--accent-cyan-hover);
             color: var(--text-on-blue);
@@ -98,8 +125,67 @@
     </style>
 </head>
 <body>
-    @yield('content')
+{{-- Logged-in pages get the side navigation. Guests (login page) get full-width content. --}}
+<div class="{{ auth()->check() ? 'd-flex' : '' }}">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @auth
+        <nav class="portal-sidebar offcanvas-lg offcanvas-start d-flex flex-column"
+             id="portalNav" tabindex="-1" aria-labelledby="portalNavLabel">
+            <div class="offcanvas-header d-lg-none">
+                <h5 class="offcanvas-title text-white" id="portalNavLabel">Menu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#portalNav" aria-label="Close"></button>
+            </div>
+
+            <div class="p-4 d-none d-lg-block">
+                <span class="fw-bold" style="font-family: var(--font-heading); font-size: 1.125rem;">Student Portal</span>
+            </div>
+
+            <ul class="nav flex-column mt-2">
+                @if (auth()->user()->role === 'teacher')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.home') ? 'active' : '' }}"
+                           href="{{ route('teacher.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.students.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.students.index') }}">Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.subjects.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.subjects.index') }}">Subjects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('teacher.marks.*') ? 'active' : '' }}"
+                           href="{{ route('teacher.marks.index') }}">Marks</a>
+                    </li>
+                @endif
+            </ul>
+
+            <div class="mt-auto p-4 small" style="color: var(--text-muted-on-blue);">
+                <div class="fw-semibold" style="color: var(--text-on-blue);">{{ auth()->user()->name }}</div>
+                <div class="text-capitalize">{{ auth()->user()->role }}</div>
+            </div>
+        </nav>
+    @endauth
+
+    <div class="flex-grow-1 {{ auth()->check() ? 'p-3 p-md-4' : '' }}" style="min-width: 0;">
+        @auth
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <button class="btn btn-accent d-lg-none" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#portalNav" aria-controls="portalNav">
+                    Menu
+                </button>
+            </div>
+        @endauth
+
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">{{ session('status') }}</div>
+        @endif
+
+        @yield('content')
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

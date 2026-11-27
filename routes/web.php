@@ -3,6 +3,10 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Student\HomeController as StudentHomeController;
 use App\Http\Controllers\Student\MarkController as StudentMarkController;
+use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
+use App\Http\Controllers\Teacher\MarkController as TeacherMarkController;
+use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
+use App\Http\Controllers\Teacher\SubjectController as TeacherSubjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,4 +23,22 @@ Route::middleware(['auth', 'role:student'])
     ->group(function () {
         Route::get('/home', [StudentHomeController::class, 'index'])->name('home');
         Route::get('/my/marks', [StudentMarkController::class, 'index'])->name('marks');
+    });
+
+// Teacher pages. Only logged-in users with the "teacher" role can open these.
+Route::middleware(['auth', 'role:teacher'])
+    ->prefix('teacher')->name('teacher.')
+    ->group(function () {
+        Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
+
+        Route::get('students', [TeacherStudentController::class, 'index'])->name('students.index');
+        Route::get('students/create', [TeacherStudentController::class, 'create'])->name('students.create');
+        Route::post('students', [TeacherStudentController::class, 'store'])->name('students.store');
+
+        Route::get('subjects', [TeacherSubjectController::class, 'index'])->name('subjects.index');
+        Route::get('subjects/create', [TeacherSubjectController::class, 'create'])->name('subjects.create');
+        Route::post('subjects', [TeacherSubjectController::class, 'store'])->name('subjects.store');
+
+        Route::get('marks', [TeacherMarkController::class, 'index'])->name('marks.index');
+        Route::post('marks', [TeacherMarkController::class, 'store'])->name('marks.store');
     });
