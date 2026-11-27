@@ -8,7 +8,10 @@
     {{-- Left: showcase panel --}}
     <div class="col-lg-6 bg-royal-blue d-flex flex-column justify-content-between p-5">
         <div>
-            <div class="fw-bold text-on-blue mb-4" style="font-family: var(--font-heading);">Portal</div>
+            <img src="{{ asset('images/school-banner.jpg') }}"
+                 alt="Republic of the Philippines, Department of Science and Technology, Philippine Science High School System"
+                 class="img-fluid w-100 mb-4"
+                 style="border-radius: var(--radius-lg);">
             <h1 class="text-on-blue">Student &amp; Academic Management Portal</h1>
             <p class="text-muted-on-blue fs-5">Track students, enter marks and view results in one place.</p>
         </div>
