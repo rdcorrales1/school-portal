@@ -81,3 +81,17 @@ test('a student lands on /student after login', function () {
     $this->post('/login', ['email' => $user->email, 'password' => 'password'])
         ->assertRedirect('/student');
 });
+
+test('the student dashboard shows the mark count and average', function () {
+    $student = Student::factory()->create();
+    $subject = Subject::factory()->create();
+    $student->subjects()->attach($subject);
+    $student->marks()->create(['subject_id' => $subject->id, 'quarter' => 1, 'mark' => 80]);
+    $student->marks()->create(['subject_id' => $subject->id, 'quarter' => 2, 'mark' => 90]);
+
+    $this->actingAs($student->user)
+        ->get('/student')
+        ->assertOk()
+        ->assertSee('Student Dashboard')
+        ->assertSee('85');
+});
