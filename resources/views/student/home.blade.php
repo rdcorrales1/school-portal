@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0" style="font-family: var(--font-heading); color: var(--text-on-blue);">Welcome, {{ $user->name }}</h1>
-        <a href="{{ route('student.marks') }}" class="btn btn-primary">My Marks</a>
+        <a href="{{ route('student.marks') }}" class="btn btn-cyan">My Marks</a>
     </div>
 
     <div class="card" style="background: var(--surface-white); border-radius: var(--radius-lg);">
